@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/ui/utils/app_colors.dart';
 
 class ErrorView extends StatelessWidget {
   final String message;
@@ -8,7 +9,9 @@ class ErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(message),
+      child: Text(message,style: TextStyle(
+        color: AppColors.accent
+      ),),
     );
   }
 }
