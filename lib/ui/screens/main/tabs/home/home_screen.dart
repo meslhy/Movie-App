@@ -51,7 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 }else if(state is BaseRequestErrorState){
                   return ErrorView(message: state.message);
                 }else{
-                  return const Center(child:  LoadingWidget());
+                  return   SizedBox(
+                    height: MediaQuery.of(context).size.height * .35,
+                      child: Center(child:  LoadingWidget()));
                 }
               },
           ),

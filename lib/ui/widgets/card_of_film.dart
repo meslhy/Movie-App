@@ -13,12 +13,15 @@ Widget cardImageOfFilm({
   double widthOfImage = 0,
   double heightOfTicket = 0,
   double widthOfTicket = 0,
+  bool inDetails = false,
 }) => InkWell(
   onTap: (){
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder:(context) => FilmDetailsScreen(moveID) )
-    );
+    if(inDetails ==false){
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder:(context) => FilmDetailsScreen("$moveID") )
+      );
+    }
   },
   child:   Stack(
     children: [

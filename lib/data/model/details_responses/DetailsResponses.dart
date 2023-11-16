@@ -1,3 +1,5 @@
+import 'package:movie_app/data/model/base_response.dart';
+
 /// adult : false
 /// backdrop_path : "/hZkgoQYus5vegHoetLkCJzb17zJ.jpg"
 /// belongs_to_collection : null
@@ -24,7 +26,7 @@
 /// vote_average : 8.433
 /// vote_count : 26280
 
-class DetailsResponses {
+class DetailsResponses extends ErrorResponse{
   bool? adult;
   String? backdropPath;
   dynamic belongsToCollection;
@@ -80,6 +82,7 @@ class DetailsResponses {
 
   DetailsResponses.fromJson(dynamic json) {
     adult = json['adult'];
+    message = json["status_message"];
     backdropPath = "https://image.tmdb.org/t/p/w500${json['backdrop_path']}";
     belongsToCollection = json['belongs_to_collection'];
     budget = json['budget'];
