@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/data/model/search_responses/SearchResponses.dart';
 import 'package:movie_app/domain/di/di.dart';
+import 'package:movie_app/ui/screens/film_details/film_details.dart';
 import 'package:movie_app/ui/screens/main/tabs/search/search_view_model.dart';
 import 'package:movie_app/ui/utils/app_assets.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
@@ -59,7 +60,6 @@ class _SearchScreenState extends State<SearchScreen> {
           BlocBuilder(
             bloc: viewModel.useCase,
               builder: (context, state) {
-              print("*************State is : $state");
                 if(state is BaseRequestSuccessState){
                   return buildListView(state.data);
                 }else if(state is BaseRequestErrorState){
@@ -106,61 +106,69 @@ class _SearchScreenState extends State<SearchScreen> {
           width: MediaQuery.of(context).size.width * .8,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: CachedNetworkImage(
-                    imageUrl: move[index].backdropPath ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px-Image_not_available.png",
-                    errorWidget: (_, __, ___) => Image.asset(
-                      AppAssets.imageTest,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder:(context) => FilmDetailsScreen("${move[index].id}") )
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: CachedNetworkImage(
+                      imageUrl: move[index].backdropPath ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px-Image_not_available.png",
+                      errorWidget: (_, __, ___) => Image.asset(
+                        AppAssets.imageTest,
+                        height: MediaQuery.of(context).size.height * .1,
+                        width: MediaQuery.of(context).size.width * .4,
+                        fit: BoxFit.cover,
+                      ),
+                      progressIndicatorBuilder: (_, __, progress) => Center(
+                          child: CircularProgressIndicator(value: progress.progress,)),
                       height: MediaQuery.of(context).size.height * .1,
                       width: MediaQuery.of(context).size.width * .4,
                       fit: BoxFit.cover,
                     ),
-                    progressIndicatorBuilder: (_, __, progress) => Center(
-                        child: CircularProgressIndicator(value: progress.progress,)),
-                    height: MediaQuery.of(context).size.height * .1,
-                    width: MediaQuery.of(context).size.width * .4,
-                    fit: BoxFit.cover,
                   ),
-                ),
-                SizedBox(width: 12,),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        move[index].originalTitle! ,
-                        style: TextStyle(
-                          color: AppColors.white ,
-                          fontSize: 15,
+                  SizedBox(width: 12,),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          move[index].originalTitle! ,
+                          style: TextStyle(
+                            color: AppColors.white ,
+                            fontSize: 15,
+                          ),
+                          maxLines: 1,
                         ),
-                        maxLines: 1,
-                      ),
-                      SizedBox(height: 4,),
-                      Text(
-                        move[index].releaseDate! ,
-                        style: TextStyle(
-                          color: AppColors.grey ,
-                          fontSize: 13,
+                        SizedBox(height: 4,),
+                        Text(
+                          move[index].releaseDate! ,
+                          style: TextStyle(
+                            color: AppColors.grey ,
+                            fontSize: 13,
+                          ),
+                          maxLines: 1,
                         ),
-                        maxLines: 1,
-                      ),
-                      SizedBox(height: 4,),
-                      Text(
-                        move[index].overview! ,
-                        style: TextStyle(
-                          color: AppColors.grey ,
-                          fontSize: 13,
+                        SizedBox(height: 4,),
+                        Text(
+                          move[index].overview! ,
+                          style: TextStyle(
+                            color: AppColors.grey ,
+                            fontSize: 13,
+                          ),
+                          maxLines: 1,
                         ),
-                        maxLines: 1,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

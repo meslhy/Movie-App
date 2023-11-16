@@ -5,5 +5,7 @@ abstract class EndPoints {
   static String newRelease = "3/movie/upcoming";
   static String recommended = "3/movie/top_rated";
   static String search = "3/search/movie";
+  static String categoriesName = "3/genre/movie/list";
+  static String moviesOfCategory = "3/discover/movie";
 
 }

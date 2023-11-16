@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:movie_app/domain/use_case/home_use_cases/get_popular_use_case.dart';
 import 'package:movie_app/domain/use_case/home_use_cases/get_recommended_use_case.dart';
 import 'package:movie_app/domain/use_case/home_use_cases/get_release_use_case.dart';
-import 'package:movie_app/ui/screens/main/tabs/browes/browes.dart';
+import 'package:movie_app/ui/screens/main/tabs/browes/browse_screen.dart';
 import 'package:movie_app/ui/screens/main/tabs/home/home_screen.dart';
 import 'package:movie_app/ui/screens/main/tabs/search/search_screen.dart';
 

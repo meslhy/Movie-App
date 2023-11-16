@@ -35,7 +35,7 @@ class HomeOnlineDSImpl extends HomeOnlineDS{
   @override
   Future<Either<Failuer, List<RecommendedResult>>> getRecommended() async{
     try{
-      Uri url = Uri.https(EndPoints.baseUrl ,EndPoints.newRelease,{
+      Uri url = Uri.https(EndPoints.baseUrl ,EndPoints.recommended ,{
         "api_key":EndPoints.apiKey
       } );
       Response serverResponse = await get(url);
