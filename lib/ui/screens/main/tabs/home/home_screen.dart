@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/data/model/details_responses/DetailsResponses.dart';
 import 'package:movie_app/data/model/popular_responsses/popularResponses.dart';
 import 'package:movie_app/data/model/recommended_responses/RecommendedResponses.dart';
 import 'package:movie_app/data/model/releases_responses/ReleasesResponses.dart';
@@ -40,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return  SingleChildScrollView(
       child: Column(
         children: [
-          //buildPopularWidget(result),
           BlocBuilder(
               bloc: viewModel.getPopularUseCase,
               builder:(context, state){
@@ -73,11 +74,20 @@ class _HomeScreenState extends State<HomeScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Image.network(
-                move.backdropPath?? AppAssets.imageTest ,
-                height: MediaQuery.of(context).size.height * .24 ,
-                fit: BoxFit.fitWidth,
+              CachedNetworkImage(
+                imageUrl: move.backdropPath!,
+                errorWidget: (_, __, ___) => Image.asset(
+                  AppAssets.imageTest,
+                  height: MediaQuery.of(context).size.height * .24 ,
+                  fit: BoxFit.fill,
+                ),
+                progressIndicatorBuilder: (_, __, progress) => Center(
+                    child: CircularProgressIndicator(value: progress.progress,)),
+                height: MediaQuery.of(context).size.height * .24,
+                width: MediaQuery.of(context).size.width * .4,
+                fit: BoxFit.cover,
               ),
+
               Padding(
                 padding:  EdgeInsets.only(
                   bottom: 5,
@@ -123,7 +133,14 @@ class _HomeScreenState extends State<HomeScreen> {
               child: cardImageOfFilm(
                   context: context ,
                   imagePath: move.posterPath!,
-                moveID : move.id!,
+                movieID : move.id!,
+                movie: DetailsResponses(
+                  id: move.id,
+                  title: move.title,
+                  posterPath: move.posterPath,
+                  releaseDate: move.releaseDate,
+                  overview: move.overview,
+                ),
               ),
             ),
           ),
@@ -172,10 +189,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemBuilder: (context, index) =>cardImageOfFilm(
                         context: context,
                         imagePath: result[index].posterPath??AppAssets.imageTest,
-                        moveID: result[index].id!
+                        movieID: result[index].id!,
+                      movie: DetailsResponses(
+                        id: result[index].id,
+                        title: result[index].title,
+                        posterPath: result[index].posterPath,
+                        releaseDate: result[index].releaseDate,
+                        overview: result[index].overview,
+                      ),
                     ) ,
                     separatorBuilder: (context, index) => const SizedBox(width: 14,),
                     itemCount: result!.length,
+
                   ),
                 ),
               ],
@@ -225,7 +250,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             context: context,
                             imagePath: result[index].posterPath??AppAssets.imageTest,
                             withDetails: true,
-                            moveID: result[index].id!
+                            movieID: result[index].id!,
+                          movie: DetailsResponses(
+                            id: result[index].id,
+                            title: result[index].title,
+                            posterPath: result[index].posterPath,
+                            releaseDate: result[index].releaseDate,
+                            overview: result[index].overview,
+                          ),
                         ),
                         Container(
                           height:MediaQuery.of(context).size.height * .09,

@@ -1,3 +1,4 @@
+import 'package:hive/hive.dart';
 import 'package:movie_app/data/model/base_response.dart';
 
 /// page : 1
@@ -5,9 +6,10 @@ import 'package:movie_app/data/model/base_response.dart';
 /// total_pages : 41025
 /// total_results : 820484
 
+
 class MoviesOfCategoryResponse extends ErrorResponse {
   MoviesOfCategoryResponse({
-      this.page, 
+      this.page,
       this.results, 
       this.totalPages, 
       this.totalResults,});

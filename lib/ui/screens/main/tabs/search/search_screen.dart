@@ -8,7 +8,9 @@ import 'package:movie_app/ui/screens/main/tabs/search/search_view_model.dart';
 import 'package:movie_app/ui/utils/app_assets.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 import 'package:movie_app/ui/utils/base_request_states.dart';
+import 'package:movie_app/ui/utils/constants.dart';
 import 'package:movie_app/ui/utils/error_view.dart';
+import 'package:movie_app/ui/widgets/card_of_movies_search.dart';
 import 'package:movie_app/ui/widgets/loading_widget.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -66,17 +68,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   return Expanded(
                     child: Center(
                       child: Text(
-                        "write anything to search...",
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.accent,
-                        ),
-                      ),
-                    ),
-                  );
-                }else if(state is BaseRequestInitialState ){
-                  return  Expanded(
-                    child: Center(
-                      child: Text(
-                        "write anything to search...",
+                       Constants.defaultErrorMessage,
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.accent,
                         ),
                       ),
@@ -106,70 +98,7 @@ class _SearchScreenState extends State<SearchScreen> {
           width: MediaQuery.of(context).size.width * .8,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder:(context) => FilmDetailsScreen("${move[index].id}") )
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: CachedNetworkImage(
-                      imageUrl: move[index].backdropPath ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px-Image_not_available.png",
-                      errorWidget: (_, __, ___) => Image.asset(
-                        AppAssets.imageTest,
-                        height: MediaQuery.of(context).size.height * .1,
-                        width: MediaQuery.of(context).size.width * .4,
-                        fit: BoxFit.cover,
-                      ),
-                      progressIndicatorBuilder: (_, __, progress) => Center(
-                          child: CircularProgressIndicator(value: progress.progress,)),
-                      height: MediaQuery.of(context).size.height * .1,
-                      width: MediaQuery.of(context).size.width * .4,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(width: 12,),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          move[index].originalTitle! ,
-                          style: TextStyle(
-                            color: AppColors.white ,
-                            fontSize: 15,
-                          ),
-                          maxLines: 1,
-                        ),
-                        SizedBox(height: 4,),
-                        Text(
-                          move[index].releaseDate! ,
-                          style: TextStyle(
-                            color: AppColors.grey ,
-                            fontSize: 13,
-                          ),
-                          maxLines: 1,
-                        ),
-                        SizedBox(height: 4,),
-                        Text(
-                          move[index].overview! ,
-                          style: TextStyle(
-                            color: AppColors.grey ,
-                            fontSize: 13,
-                          ),
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: CardMoviesSearch(move[index]),
           ),
         ),
         separatorBuilder: (context, index) => Container(height: 1,width:MediaQuery.of(context).size.width * .8, color: AppColors.grey,),

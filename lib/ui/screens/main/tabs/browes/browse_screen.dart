@@ -12,14 +12,14 @@ import 'package:movie_app/ui/widgets/categoryWidget.dart';
 import 'package:movie_app/ui/widgets/loading_widget.dart';
 
 
-class BrowesScreen extends StatefulWidget {
-  const BrowesScreen({super.key});
+class BrowseScreen extends StatefulWidget {
+  const BrowseScreen({super.key});
 
   @override
-  State<BrowesScreen> createState() => _BrowesScreenState();
+  State<BrowseScreen> createState() => _BrowseScreenState();
 }
 
-class _BrowesScreenState extends State<BrowesScreen> {
+class _BrowseScreenState extends State<BrowseScreen> {
   BrowseViewModel viewModel = getIt();
   @override
   void initState() {

@@ -9,20 +9,37 @@ import 'package:movie_app/ui/screens/main/tabs/search/search_screen.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 
 
-class mainScreen extends StatelessWidget {
+class mainScreen extends StatefulWidget {
   static const roteName = "homeScreen";
 
+  @override
+  State<mainScreen> createState() => _mainScreenState();
+}
+
+class _mainScreenState extends State<mainScreen> {
   MainViewModel viewModel = getIt();
 
   @override
   Widget build(BuildContext context) {
 
-    return SafeArea(
-      child: BlocBuilder(
-        bloc: viewModel,
-        builder:(context, state) =>  Scaffold(
-          body: viewModel.tabs[viewModel.currentIndex],
-          bottomNavigationBar: bottomNavBar(context),
+    return WillPopScope(
+      onWillPop: () async{
+        if(viewModel.currentIndex != 0 ) {
+          viewModel.currentIndex = 0;
+          setState(() {});
+          return Future.value(false);
+        }else {
+          return Future.value(true);
+        }
+
+      },
+      child: SafeArea(
+        child: BlocBuilder(
+          bloc: viewModel,
+          builder:(context, state) =>  Scaffold(
+            body: viewModel.tabs[viewModel.currentIndex],
+            bottomNavigationBar: bottomNavBar(context),
+          ),
         ),
       ),
     );

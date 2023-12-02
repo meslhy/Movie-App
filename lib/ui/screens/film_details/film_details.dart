@@ -6,6 +6,7 @@ import 'package:movie_app/data/model/simillar_responses/SimillarResponses.dart';
 import 'package:movie_app/domain/di/di.config.dart';
 import 'package:movie_app/domain/di/di.dart';
 import 'package:movie_app/ui/screens/film_details/film_details_view_model.dart';
+import 'package:movie_app/ui/screens/main/tabs/browes/movies_of_category/movies_of_category.dart';
 import 'package:movie_app/ui/utils/app_assets.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 import 'package:movie_app/ui/utils/base_request_states.dart';
@@ -25,6 +26,7 @@ class FilmDetailsScreen extends StatefulWidget {
 
 class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
   FilmDetailsViewModel viewModel = getIt();
+  bool enableLikeMovie = false ;
   @override
   void initState() {
     super.initState();
@@ -48,7 +50,8 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
   }
 
 //DetailsResponses? details
-  Widget buildScreen(BuildContext context , DetailsResponses? details) => Scaffold(
+  Widget buildScreen(BuildContext context , DetailsResponses? details) {
+    return Scaffold(
     appBar: AppBar(
       backgroundColor: AppColors.bottomNavBar,
       title: Text(
@@ -75,7 +78,7 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
             fit: BoxFit.fill,
           ),
           const SizedBox(height: 13,),
-          Padding(
+          !enableLikeMovie? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,17 +106,33 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
                       cardImageOfFilm(
                         context: context,
                         imagePath: details.posterPath!,
-                        moveID: 0,
+                        movieID: 0,
                         heightOfImage: MediaQuery.of(context).size.height * .24,
                         widthOfImage: MediaQuery.of(context).size.width * .31,
                         heightOfTicket: MediaQuery.of(context).size.height * .05,
                         widthOfTicket: MediaQuery.of(context).size.width * .08,
-                        inDetails: true
+                        inDetails: true,
+                        movie: details,
                       ),
                       const SizedBox(width: 11,),
                       Expanded(
                           child: Column(
                             children: [
+                              SizedBox(
+                                height:MediaQuery.of(context).size.height *.05,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: ListView.separated(
+                                        itemBuilder:(context,index)=> buildGenresItem(details.genres![index]),
+                                        separatorBuilder: (context, index) =>const SizedBox(width: 5,),
+                                        itemCount: details.genres!.length,
+                                        scrollDirection: Axis.horizontal,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                               const Spacer(),
                               Text(
                                 details.overview!,
@@ -149,7 +168,7 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
                 const SizedBox(height: 18,),
               ],
             ),
-          ),
+          ):const SizedBox(height: 5,),
           BlocBuilder(
             bloc: viewModel.similarUseCase,
             builder: (context, state) {
@@ -168,10 +187,11 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
       ),
     ),
   );
+  }
 
 //List<SimilarResult> result
   Widget buildMoreLikeList(BuildContext context ,List<SimilarResult> result ) => Container(
-    height: MediaQuery.of(context).size.height * .34,
+    height:enableLikeMovie? MediaQuery.of(context).size.height * .7 :MediaQuery.of(context).size.height * .34,
     color: AppColors.backgroundList,
     child: Padding(
       padding: const EdgeInsets.only(left: 22.0 , ),
@@ -179,26 +199,55 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 13,),
-          const Text(
-            "More Like This",
-            style: TextStyle(
-              color: AppColors.white,
-              fontSize: 15,
+          InkWell(
+            onTap: () {
+              enableLikeMovie = !enableLikeMovie;
+              setState(() {});
+            },
+            child:  Row(
+                children: [
+                   const Text(
+                "More Like This",
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: 15,
+                ),
+              ),
+                  const Spacer(),
+                   const Text(
+                "More ",
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: 15,
+                ),
+              ),
+                  Icon( enableLikeMovie? Icons.arrow_drop_down_sharp:Icons.arrow_drop_up_sharp,color: AppColors.white,),
+                  const SizedBox(width: 10,)
+            ]
             ),
           ),
           const SizedBox(height: 13,),
           SizedBox(
-            height: MediaQuery.of(context).size.height * .27,
-            child: ListView.separated(
-
-              scrollDirection: Axis.horizontal,
+            height: enableLikeMovie? MediaQuery.of(context).size.height * .6 : MediaQuery.of(context).size.height * .27,
+            child: GridView.builder(
+              physics: enableLikeMovie? const PageScrollPhysics() : const NeverScrollableScrollPhysics(),
+              itemCount: result.length,
+              scrollDirection: Axis.vertical,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3,childAspectRatio: 0.5),
               itemBuilder: (context, index) =>Column(
                 children: [
                   cardImageOfFilm(
                       context: context,
                       imagePath: result[index].posterPath ?? AppAssets.imageTest,
                       withDetails: true,
-                      moveID: result[index].id!,
+                      movieID: result[index].id!,
+                    movie: DetailsResponses(
+                      id: result[index].id,
+                      title: result[index].title,
+                      posterPath: result[index].posterPath,
+                      releaseDate: result[index].releaseDate,
+                      overview: result[index].overview,
+                    ),
 
                   ),
                   Container(
@@ -239,12 +288,37 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
                   ),
                 ],
               ) ,
-              separatorBuilder: (context, index) => const SizedBox(width: 14,),
-              itemCount: 10,
             ),
           ),
         ],
       ),
     ),
   );
+
+  buildGenresItem(Genres genre){
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+
+            context,
+            MaterialPageRoute(builder:(context) => MoviesOfCategory(categoryName: genre.name!,categoryID:"${genre.id!}",) )
+        );
+      },
+      child: Container(
+        padding:const EdgeInsetsDirectional.all(10),
+        decoration: BoxDecoration(
+            border: Border.all(color: AppColors.accent),
+            borderRadius: BorderRadiusDirectional.circular(10),
+
+        ),
+        child: Text(
+          genre.name??"",
+          style: TextStyle(
+            color: AppColors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
 }
